@@ -15,6 +15,10 @@ namespace Application.Activities
         /// </summary>
         public class Query : IRequest<IEnumerable<Activity>> { }
 
+
+        /// <summary>
+        /// handlde: pass  a query obj, in this case empry, and returnin a enumerator(list) of Activity
+        /// </summary>
         public class Handler : IRequestHandler<Query, IEnumerable<Activity>>
         {
             private readonly Context _context;

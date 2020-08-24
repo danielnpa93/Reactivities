@@ -12,7 +12,7 @@ namespace Application.Activities
         /// <summary>
         /// commands does not return values
         /// </summary>
-        public class Command : IRequest
+        public class Command : IRequest<Activity>
         {
             public string Title { get; set; }
             public string Description { get; set; }
@@ -25,18 +25,24 @@ namespace Application.Activities
         /// <summary>
         /// require a command object decalred above, and dont return. Note: Unit is a empty object.
         /// </summary>
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Activity>
         {
             private readonly Context _context;
 
-            public Handler(Context context )
+            public Handler(Context context)
             {
                 _context = context;
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            //public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            //{
+            //  
+
+            //}
+            public async Task<Activity> Handle(Command request, CancellationToken cancellationToken)
             {
-                _context.Add(new Activity
+                var newActivity = new Activity
                 {
+
                     Category = request.Category,
                     City = request.City,
                     Date = request.Date,
@@ -44,17 +50,20 @@ namespace Application.Activities
                     Id = Guid.NewGuid(),
                     Title = request.Title,
                     Venue = request.Venue
-                }); //can use mapper
+
+                };
+
+
+                _context.Add(newActivity);
 
                 var wasSaved = await _context.SaveChangesAsync() > 0;
 
                 if (wasSaved)
                 {
-                    return Unit.Value;
+                    return newActivity;
                 }
 
                 throw new Exception("Problem Saving Changes");
-
             }
         }
     }
